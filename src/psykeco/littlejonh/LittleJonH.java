@@ -9,11 +9,19 @@ import psykeco.littlejonh.constants.LittleJonHConstants;
 
 public final class LittleJonH {
 	
-	private int minute; // 0-59
-	private int hours; // 0-23
-	private int dayOfMonth; // 1-31
-	private Month month; //1-12
-	private DayOfWeek dayOfWeek; //0-6 
+	/** valid range 0-59 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	private boolean[] minute=new boolean[59]; 
+	
+	/** valid range 0-23 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	private boolean[] hours=new boolean[24]; 
+	
+	/** valid range 1-31 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	private boolean[] dayOfMonth=new boolean[31]; 
+	
+	/** valid range 1-12 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	private boolean[] month=new boolean[12]; 
+	/** valid range 0-6 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	private boolean[] dayOfWeek=new boolean[7]; 
 	
 	private LocalDateTime currentTime;
 	
@@ -33,18 +41,19 @@ public final class LittleJonH {
 		
 		for (int i=0;i<splitCron.length;i++) {
 			if(i==CronExprOrder.MINUTE.ordinal()) {
-				
+				//minute=analyze(splitCron[i]);
 			} else if(i==CronExprOrder.HOURS.ordinal()) {
-				
+				//hours=analyze(splitCron[i]);
 			} else if(i==CronExprOrder.DAY_OF_MONTH.ordinal()) {
-				
+				//dayOfMonth=analyze(splitCron[i]);
 			} else if(i==CronExprOrder.MONTH.ordinal()) {
-				
+				//month=analyze(splitCron[i]);
 			} else if(i==CronExprOrder.DAY_OF_WEEK.ordinal()) {
-				
+				//dayOfWeek=analyze(splitCron[i]);
 			}
 		}
 	}
+	
 	
 	public LocalDateTime nextT() {
 		return null;
