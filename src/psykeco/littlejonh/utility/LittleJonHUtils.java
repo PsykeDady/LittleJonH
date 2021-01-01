@@ -1,16 +1,18 @@
 package psykeco.littlejonh.utility;
 
 import static psykeco.littlejonh.constants.LittleJonHConstants.ERR_TEXT_WRONG_CRON;
-import static psykeco.littlejonh.constants.LittleJonHConstants.EVERY_STAR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_MONTH_STR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.MONTH_STR;
 
-import psykeco.littlejonh.constants.CronExprOrder;;
+
+
 
 public final class LittleJonHUtils {
 
 	// private construtore. Static utils
 	private LittleJonHUtils() {}
 	
-	public static String analyze(String cron, boolean [] output) {
+	public static String analyze(String cron, boolean [] output, String what) {
 		//separate values
 		int step=1, tmp=0, end = output.length-1;
 		boolean isStep=false, isRange=false,globStar=false;
@@ -44,13 +46,60 @@ public final class LittleJonHUtils {
 				end=0;
 			}
 			if (c==','||i==cron.length()-1){
+				if(what.equals(MONTH_STR) || what.equals(DAY_OF_MONTH_STR)) {
+					tmp--;
+					end--;
+				}
+				
 				if (! globStar && ! isStep && ! isRange) {end=tmp;}
 				for (int j=tmp; j<=end;j+=step) output [j]=true;
-				sb.append("start from "+tmp+" to "+end+" every "+step+"\n");
+				
+				if(what.equals(MONTH_STR) || what.equals(DAY_OF_MONTH_STR)) {
+					tmp++;
+					end++;
+				}
+				
+				if(!globStar && !isRange && !isStep) sb.append("at "+what+" "+tmp);
+				else if(!globStar) sb.append("every "+what+" on ranges from "+tmp+" ");
+				else if (globStar) sb.append("every "+what+" ");
+				
+				if(isRange) sb.append("to "+end+" ");
+				
+				if(isStep && step>1) sb.append("with "+step+" steps at a time");
+				
 				step=1; tmp=0; end = output.length;
 				isStep=false; isRange=false; globStar=false;
+				if (i!=cron.length()-1) sb.append(" and ");
 			}
 		}
 		return sb.toString();
+	}
+	
+	public static int indexOfWordlist(String word, String wordlist) {
+		int ind=-1, mod=-1;
+		
+		ind=wordlist.indexOf(word);
+		if(ind==-1)return ind;
+		
+		mod=ind%3;
+		if(mod!=0) return -1;
+		
+		return ind/3;
+	}
+	
+	public static int searchNextOccurence(boolean[]values, int index) {
+		for (int tmp=index+1;tmp<values.length;tmp++) {
+			if(values[tmp]) return tmp;
+		}
+		for (int tmp=0;tmp<index;tmp++) {
+			if(values[tmp]) return tmp;
+		}
+		return -1;
+	}
+	
+	public static int monthLength(int month, int year) {
+		
+		
+		return 31;
 	}
 }

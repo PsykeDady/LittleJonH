@@ -5,57 +5,90 @@ import java.time.LocalDateTime;
 import java.time.Month;
 
 import psykeco.littlejonh.constants.CronExprOrder;
-import psykeco.littlejonh.constants.LittleJonHConstants;
+import static psykeco.littlejonh.constants.LittleJonHConstants.ERR_TEXT_WRONG_CRON;
+import static psykeco.littlejonh.constants.LittleJonHConstants.MINUTE_STR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.HOURS_STR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_MONTH_STR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.MONTH_STR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_WEEK_STR;
+import static psykeco.littlejonh.utility.LittleJonHUtils.analyze;
+import static psykeco.littlejonh.utility.LittleJonHUtils.searchNextOccurence;
+import static psykeco.littlejonh.utility.LittleJonHUtils.monthLength;
+
 
 public final class LittleJonH {
 	
-	/** valid range 0-59 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
-	private boolean[] minute=new boolean[59]; 
+	/**  */
+	private boolean[] minutes=new boolean[59]; 
 	
-	/** valid range 0-23 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	/**  */
 	private boolean[] hours=new boolean[24]; 
 	
-	/** valid range 1-31 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	/**  */
 	private boolean[] dayOfMonth=new boolean[31]; 
 	
-	/** valid range 1-12 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	/**  */
 	private boolean[] month=new boolean[12]; 
-	/** valid range 0-6 or {@link LittleJonHConstants #EVERY_STAR} if "every" */
+	
+	/**  */
 	private boolean[] dayOfWeek=new boolean[7]; 
 	
 	private LocalDateTime currentTime;
 	
 	private String cronExpr;
 	
+	private String human="";
 	
 	public LittleJonH (String cronExpr) {
 		if ( cronExpr==null || cronExpr.equals("") ) {
-			throw new IllegalArgumentException(LittleJonHConstants.ERR_TEXT_WRONG_CRON);
+			throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 		}
 		this.cronExpr=cronExpr.trim();
+		
 		String [] splitCron = this.cronExpr.split(" ");
 		
 		if (splitCron.length != CronExprOrder.values().length) {
-			throw new IllegalArgumentException(LittleJonHConstants.ERR_TEXT_WRONG_CRON);
+			throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 		}
 		
+		StringBuilder hbuild=new StringBuilder(2000);
 		for (int i=0;i<splitCron.length;i++) {
 			if(i==CronExprOrder.MINUTE.ordinal()) {
-				//minute=analyze(splitCron[i]);
+			  hbuild.append(analyze(splitCron[i],minutes,MINUTE_STR));
 			} else if(i==CronExprOrder.HOURS.ordinal()) {
-				//hours=analyze(splitCron[i]);
+			  hbuild.append(analyze(splitCron[i],hours,HOURS_STR));
 			} else if(i==CronExprOrder.DAY_OF_MONTH.ordinal()) {
-				//dayOfMonth=analyze(splitCron[i]);
+			  hbuild.append(analyze(splitCron[i],dayOfMonth,DAY_OF_MONTH_STR));
 			} else if(i==CronExprOrder.MONTH.ordinal()) {
-				//month=analyze(splitCron[i]);
+			  hbuild.append(analyze(splitCron[i],month,MONTH_STR));
 			} else if(i==CronExprOrder.DAY_OF_WEEK.ordinal()) {
-				//dayOfWeek=analyze(splitCron[i]);
+			  hbuild.append(analyze(splitCron[i],dayOfWeek,DAY_OF_WEEK_STR));
 			}
+			hbuild.append('\n');
 		}
+		hbuild.deleteCharAt(hbuild.length()-1);
+		human=hbuild.toString();
+		setNow();
 	}
 	
 	
 	public LocalDateTime nextT() {
+		
+		int minute		= currentTime.getMinute();
+		int hour		= currentTime.getHour();
+		int dayOfMonth	= currentTime.getDayOfMonth();
+		int month		= currentTime.getMonthValue()-1;
+		int dayOfWeek	= currentTime.getDayOfWeek().getValue()%7;
+		int year		= currentTime.getYear();
+		
+		minute			= searchNextOccurence(this.minutes, minute);
+		
+		hour			= (minute<currentTime.getMinute())?(hour+1)%24:hour;
+		hour			= searchNextOccurence(hours, hour);
+		
+		if(hour<currentTime.getHour()) { dayOfMonth=(dayOfMonth + 1)%monthLength(month,year); dayOfWeek=(dayOfWeek + 1)%7;}
+		currentTime=LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+		
 		return null;
 	}
 	
@@ -72,7 +105,11 @@ public final class LittleJonH {
 	}
 	
 	public String getCronExpr() {
-		return null;
+		return cronExpr;
+	}
+	
+	public String getHuman() {
+		return human;
 	}
 
 }
