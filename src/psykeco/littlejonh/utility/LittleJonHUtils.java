@@ -39,6 +39,10 @@ public final class LittleJonHUtils {
 				step=0;
 			}  else if ( c=='*') {
 				if (tmp!=0) new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+				if(what.equals(MONTH_STR) || what.equals(DAY_OF_MONTH_STR)) {
+					tmp=1;
+					end=output.length;
+				}
 				globStar=true;
 			} else if (c=='-') {
 				if(globStar) new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
@@ -60,6 +64,7 @@ public final class LittleJonHUtils {
 				}
 				
 				if(!globStar && !isRange && !isStep) sb.append("at "+what+" "+tmp);
+				else if(!globStar && !isRange) sb.append("every "+what+" from "+tmp+" ");
 				else if(!globStar) sb.append("every "+what+" on ranges from "+tmp+" ");
 				else if (globStar) sb.append("every "+what+" ");
 				
@@ -99,7 +104,11 @@ public final class LittleJonHUtils {
 	
 	public static int monthLength(int month, int year) {
 		
+		switch (month) {
+		case 1:case 3:case 5:case 7:case 8:case 10:case 12: return 31;
+		case 4:case 6:case 9:case 11: return 30;
+		}
 		
-		return 31;
+		return  year%4==0 && (year%400==0 || year%100!=0 )  ? 29 : 28;
 	}
 }

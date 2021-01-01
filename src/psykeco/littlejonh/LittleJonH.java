@@ -71,6 +71,9 @@ public final class LittleJonH {
 		setNow();
 	}
 	
+	public LocalDateTime getCurrent() {
+		return currentTime;
+	}
 	
 	public LocalDateTime nextT() {
 		
@@ -83,13 +86,18 @@ public final class LittleJonH {
 		
 		minute			= searchNextOccurence(this.minutes, minute);
 		
-		hour			= (minute<currentTime.getMinute())?(hour+1)%24:hour;
-		hour			= searchNextOccurence(hours, hour);
+		hour			= (minute<currentTime.getMinute())? searchNextOccurence(hours, hour)%24 :hour;
 		
-		if(hour<currentTime.getHour()) { dayOfMonth=(dayOfMonth + 1)%monthLength(month,year); dayOfWeek=(dayOfWeek + 1)%7;}
-		currentTime=LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+		if(hour<currentTime.getHour()) { 
+			dayOfMonth	=searchNextOccurence(this.dayOfMonth, dayOfMonth)%monthLength(month,year); 
+			dayOfWeek	=searchNextOccurence(this.dayOfWeek, dayOfWeek)%7; //TODO non sfruttato
+		}
 		
-		return null;
+		month			= dayOfMonth<currentTime.getMonthValue()-1?searchNextOccurence(this.month, month)%12:month;
+		
+		currentTime=LocalDateTime.of(year, month+1, dayOfMonth, hour, minute);
+		
+		return currentTime;
 	}
 	
 	public LocalDateTime prevT() {
@@ -102,6 +110,13 @@ public final class LittleJonH {
 	
 	public void setNow(){
 		setCurrentTime(LocalDateTime.now());
+		setCurrentTime(LocalDateTime.of(
+				currentTime.getYear(), 
+				currentTime.getMonth(), 
+				currentTime.getDayOfMonth(), 
+				currentTime.getHour(), 
+				currentTime.getMinute()
+		));
 	}
 	
 	public String getCronExpr() {
