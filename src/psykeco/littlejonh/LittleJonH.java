@@ -108,7 +108,7 @@ public final class LittleJonH {
 			dayOfMonth=hour<currentTime.getHour()?searchNextOccurence(daysOfMonth, dayOfMonth):dayOfMonth;
 			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
 		}
-		
+		//FIXME con giorno 31 si rompe e non tiene conto dell'ultimo giorno del mese
 		currentTime=LocalDateTime.of(year, month+1, dayOfMonth, hour, minute);
 		
 		

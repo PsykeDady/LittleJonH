@@ -26,20 +26,26 @@ public class TestCron {
 		System.out.println(LittleJonHUtils.analyze("15-30/5",minute,MINUTE_STR)+"\n");
 		
 		LittleJonH l=new LittleJonH("1 1/2 31 4,5,12 *");
+		System.out.println(l.getCronExpr());
 		System.out.println(l.getHuman()+'\n');
+		System.out.println("curr "+l.getCurrent());
+		System.out.println("next "+l.nextT()+'\n'+'\n');
 		
 		
 		l=new LittleJonH("* * * * *");
+		System.out.println(l.getCronExpr());
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
 		System.out.println("next "+l.nextT()+'\n'+'\n');
 		
 		l=new LittleJonH("* 16/2 * * *");
+		System.out.println(l.getCronExpr());
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
 		System.out.println("next "+l.nextT()+'\n'+'\n');
 		
 		l=new LittleJonH("1 * * * *");
+		System.out.println(l.getCronExpr());
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
 		System.out.println("next "+l.nextT()+'\n'+'\n');
