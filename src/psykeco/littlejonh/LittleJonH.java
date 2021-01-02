@@ -25,13 +25,13 @@ public final class LittleJonH {
 	private boolean[] hours=new boolean[24]; 
 	
 	/**  */
-	private boolean[] dayOfMonth=new boolean[31]; 
+	private boolean[] daysOfMonth=new boolean[31]; 
 	
 	/**  */
-	private boolean[] month=new boolean[12]; 
+	private boolean[] months=new boolean[12]; 
 	
 	/**  */
-	private boolean[] dayOfWeek=new boolean[7]; 
+	private boolean[] daysOfWeek=new boolean[7]; 
 	
 	private LocalDateTime currentTime;
 	
@@ -58,11 +58,11 @@ public final class LittleJonH {
 			} else if(i==CronExprOrder.HOURS.ordinal()) {
 			  hbuild.append(analyze(splitCron[i],hours,HOURS_STR));
 			} else if(i==CronExprOrder.DAY_OF_MONTH.ordinal()) {
-			  hbuild.append(analyze(splitCron[i],dayOfMonth,DAY_OF_MONTH_STR));
+			  hbuild.append(analyze(splitCron[i],daysOfMonth,DAY_OF_MONTH_STR));
 			} else if(i==CronExprOrder.MONTH.ordinal()) {
-			  hbuild.append(analyze(splitCron[i],month,MONTH_STR));
+			  hbuild.append(analyze(splitCron[i],months,MONTH_STR));
 			} else if(i==CronExprOrder.DAY_OF_WEEK.ordinal()) {
-			  hbuild.append(analyze(splitCron[i],dayOfWeek,DAY_OF_WEEK_STR));
+			  hbuild.append(analyze(splitCron[i],daysOfWeek,DAY_OF_WEEK_STR));
 			}
 			hbuild.append('\n');
 		}
@@ -84,18 +84,33 @@ public final class LittleJonH {
 		int dayOfWeek	= currentTime.getDayOfWeek().getValue()%7;
 		int year		= currentTime.getYear();
 		
-		minute			= searchNextOccurence(this.minutes, minute);
-		
-		hour			= (minute<currentTime.getMinute())? searchNextOccurence(hours, hour)%24 :hour;
-		
-		if(hour<currentTime.getHour()) { 
-			dayOfMonth	=searchNextOccurence(this.dayOfMonth, dayOfMonth)%monthLength(month,year); 
-			dayOfWeek	=searchNextOccurence(this.dayOfWeek, dayOfWeek)%7; //TODO non sfruttato
+		if(!months[month]) {
+			month=searchNextOccurence(months, month);
+			dayOfWeek=daysOfWeek[0]?0:searchNextOccurence(daysOfWeek, 0);
+			dayOfMonth=daysOfMonth[0]?0:searchNextOccurence(daysOfMonth, 0);
+			hour=hours[0]?0:searchNextOccurence(hours, 0);
+			minute=minutes[0]? 0 : searchNextOccurence(minutes, 0);
+		} else if (!daysOfMonth[dayOfMonth]) {
+			dayOfMonth=searchNextOccurence(daysOfMonth, dayOfMonth);
+			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
+			hour=hours[0]?0:searchNextOccurence(hours, 0);
+			minute=minutes[0]? 0 : searchNextOccurence(minutes, 0);
+		}else if (!hours[hour]) {
+			hour=searchNextOccurence(hours, hour);
+			dayOfWeek=hour<currentTime.getHour()?searchNextOccurence(daysOfWeek, dayOfWeek):dayOfWeek;
+			dayOfMonth=hour<currentTime.getHour()?searchNextOccurence(daysOfMonth, dayOfMonth):dayOfMonth;
+			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
+			minute=minutes[0]? 0 : searchNextOccurence(minutes, 0);
+		} else {
+			minute =searchNextOccurence(minutes, minute);
+			hour=minute<currentTime.getMinute()?searchNextOccurence(hours, hour): hour;
+			dayOfWeek=hour<currentTime.getHour()?searchNextOccurence(daysOfWeek, dayOfWeek):dayOfWeek;
+			dayOfMonth=hour<currentTime.getHour()?searchNextOccurence(daysOfMonth, dayOfMonth):dayOfMonth;
+			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
 		}
 		
-		month			= dayOfMonth<currentTime.getMonthValue()-1?searchNextOccurence(this.month, month)%12:month;
-		
 		currentTime=LocalDateTime.of(year, month+1, dayOfMonth, hour, minute);
+		
 		
 		return currentTime;
 	}

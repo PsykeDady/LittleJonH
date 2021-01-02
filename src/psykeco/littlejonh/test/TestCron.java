@@ -29,7 +29,17 @@ public class TestCron {
 		System.out.println(l.getHuman()+'\n');
 		
 		
-		l=new LittleJonH("* 1/2 * * *");
+		l=new LittleJonH("* * * * *");
+		System.out.println(l.getHuman()+'\n');
+		System.out.println("curr "+l.getCurrent());
+		System.out.println("next "+l.nextT()+'\n'+'\n');
+		
+		l=new LittleJonH("* 16/2 * * *");
+		System.out.println(l.getHuman()+'\n');
+		System.out.println("curr "+l.getCurrent());
+		System.out.println("next "+l.nextT()+'\n'+'\n');
+		
+		l=new LittleJonH("1 * * * *");
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
 		System.out.println("next "+l.nextT()+'\n'+'\n');
