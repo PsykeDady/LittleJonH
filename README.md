@@ -13,5 +13,5 @@
 - integrate dayOfWeek
 - single next method for time unit ( clean )
 - prev
-- analyze with wordlist
+- ~~analyze with wordlist~~
 - documentation

@@ -15,7 +15,7 @@ public final class LittleJonHConstants {
 	public final static String MONTH_STR="month";
 	public final static String DAY_OF_WEEK_STR="day of week";
 	
-	public final static String WORDLIST_MONTH="JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC";
+	public final static String WORDLIST_MONTH="\0\0\0JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC"; // \0\0\0 is added to match range 1-31
 	public final static String WORDLIST_DAY_OF_WEEK="SUNMONTUEWEDTHUFRISAT";
 	
 	/** in cron expression, * sign stand for "every", on variabiles we have this constant */

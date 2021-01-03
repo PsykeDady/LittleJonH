@@ -19,7 +19,7 @@ import static psykeco.littlejonh.utility.LittleJonHUtils.monthLength;
 public final class LittleJonH {
 	
 	/**  */
-	private boolean[] minutes=new boolean[59]; 
+	private boolean[] minutes=new boolean[60]; 
 	
 	/**  */
 	private boolean[] hours=new boolean[24]; 
