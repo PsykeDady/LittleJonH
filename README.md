@@ -11,7 +11,7 @@
 ## TODO 
 
 - integrate dayOfWeek
-- single next method for time unit ( clean )
+- ~~single next method for time unit ( clean )~~
 - prev
 - ~~analyze with wordlist~~
 - documentation

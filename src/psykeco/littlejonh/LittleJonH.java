@@ -75,8 +75,60 @@ public final class LittleJonH {
 		return currentTime;
 	}
 	
-	public LocalDateTime nextT() {
+	private int[] nextMinute(int ... time) {
+		int tmp=0,tmp2=0;
+		tmp=searchNextOccurence(minutes, time[0]); //update minute
+		tmp2=tmp<=time[0]?time[1]+1:time[1]; // update hour
+		time[0]=tmp; // update minute
+		tmp=tmp2<time[1]?time[3]+1:time[3]; // update dM
+		time[1]=tmp2; // update hour
+		tmp2=tmp<time[3]?time[4]+1:time[4]; // update month
+		time[3]=tmp; // update dM
+		time[5]=tmp2<time[4]?time[5]+1:time[5]; // update year
+		time[4]=tmp2; //Update month
 		
+		return time;
+	}
+	
+	private int[] nextHour(int...time) {
+		int tmp=0,tmp2=0;
+		tmp=searchNextOccurence(hours, time[1]); //update Hour
+		tmp2=tmp<=time[1]?time[2]+1:time[2]; // update dM
+		time[1]=tmp; // update Hour
+		tmp=tmp2<time[2]?time[3]+1:time[3]; // update Month
+		time[2]=tmp2; // update dM
+		time[5]=tmp<time[3]?time[5]+1:time[5]; // update year
+		time[3]=tmp; // update month
+		time[0]=0;
+		
+		return time;
+	}
+	
+	private int[] nextDayOfMonth(int [] time) {
+		int tmp=0,tmp2=0;
+		
+		tmp=searchNextOccurence(daysOfMonth, time[2]); //update dM
+		tmp2=tmp<=time[2]?time[3]+1:time[3]; // update month
+		time[2]=tmp; // update dM
+		time[5]=tmp2<time[3]?time[5]+1:time[5]; // update year
+		time[3]=tmp2; // update month
+		time[1]=time[0]=0;
+		
+		return time;
+	}
+	
+	public int[] nextMonth(int ...time) {
+		int tmp=0;;
+		
+		tmp=searchNextOccurence(months, time[3]);
+		time[5]=tmp<=time[3]?time[5]+1:time[5];
+		time[3]=tmp;
+		time[2]=time[1]=time[0]=0;
+		
+		return time;
+	}
+	
+	public LocalDateTime nextT() {
 		int minute		= currentTime.getMinute();
 		int hour		= currentTime.getHour();
 		int dayOfMonth	= currentTime.getDayOfMonth()-1;
@@ -84,56 +136,27 @@ public final class LittleJonH {
 		int dayOfWeek	= currentTime.getDayOfWeek().getValue()%7;
 		int year		= currentTime.getYear();
 		
+		int [] time= {minute,hour,dayOfMonth,month,dayOfWeek,year};
+				
 		int tmp=0,tmp2=0;
 		
-		tmp=searchNextOccurence(minutes, minute); //update minute
-		tmp2=tmp<=minute?hour+1:hour; // update hour
-		minute=tmp; // update minute
-		tmp=tmp2<hour?dayOfMonth+1:dayOfMonth; // update dM
-		hour=tmp2; // update hour
-		tmp2=tmp<dayOfMonth?month+1:month; // update month
-		dayOfMonth=tmp; // update dM
-		year=tmp2<month?year+1:year; // update year
-		month=tmp2; //Update month
+		nextMinute(time);
 		
 		while(true) {
-			if( month>=months.length || ! months[month]) {
-				tmp=searchNextOccurence(months, month);
-				year=tmp<=month?year+1:year;
-				dayOfMonth=hour=minute=0;
-				month=tmp;
-			} else if (dayOfMonth>=monthLength(month, year) || ! daysOfMonth[dayOfMonth]) { 
-				tmp=searchNextOccurence(daysOfMonth, dayOfMonth); //update dM
-				tmp2=tmp<=dayOfMonth?month+1:month; // update month
-				dayOfMonth=tmp; // update dM
-				year=tmp2<month?year+1:year; // update year
-				month=tmp2; // update month
-				hour=minute=0;
-			} else if (hour>=hours.length || ! hours[hour]) {
-				tmp=searchNextOccurence(hours, hour); //update Hour
-				tmp2=tmp<=hour?dayOfMonth+1:dayOfMonth; // update dM
-				hour=tmp; // update Hour
-				tmp=tmp2<dayOfMonth?month+1:month; // update Month
-				dayOfMonth=tmp2; // update dM
-				year=tmp<month?year+1:year; // update year
-				month=tmp; // update month
-				minute=0;
-			} else if (minute>=minutes.length || ! minutes[minute]) {
-				tmp=searchNextOccurence(minutes, minute); //update minute
-				tmp2=tmp<=minute?hour+1:hour; // update hour
-				minute=tmp; // update minute
-				tmp=tmp2<hour?dayOfMonth+1:dayOfMonth; // update dM
-				hour=tmp2; // update hour
-				tmp2=tmp<dayOfMonth?month+1:month; // update month
-				dayOfMonth=tmp; // update dM
-				year=tmp2<month?year+1:year; // update year
-				month=tmp2; //Update month
+			if( time[3]>=months.length || ! months[time[3]]) {
+				nextMonth(time);
+			} else if (time[2]>=monthLength(time[3], time[5]) || ! daysOfMonth[time[2]]) { 
+				nextDayOfMonth(time);
+			} else if (time[1]>=hours.length || ! hours[time[1]]) {
+				nextHour(time);
+			} else if (time[0]>=minutes.length || ! minutes[time[0]]) {
+				nextMinute(time);
 			} else {
 				break;
 			}
 		}
 		
-		currentTime=LocalDateTime.of(year,month+1, dayOfMonth+1, hour, minute);
+		currentTime=LocalDateTime.of(time[5],time[3]+1, time[2]+1, time[1], time[0]);
 		return currentTime;
 	}
 	

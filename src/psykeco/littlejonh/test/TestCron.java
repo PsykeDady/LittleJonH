@@ -58,4 +58,5 @@ public class TestCron {
 		System.out.println("SUNDAY IS "+LittleJonHUtils.indexOfWordlist("SUN",WORDLIST_DAY_OF_WEEK ));
 		System.out.println("JUNE IS "+LittleJonHUtils.indexOfWordlist("JUN",WORDLIST_MONTH ));
 	}
+	
 }
