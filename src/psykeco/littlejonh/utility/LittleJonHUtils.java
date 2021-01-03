@@ -93,20 +93,27 @@ public final class LittleJonHUtils {
 	}
 	
 	public static int searchNextOccurence(boolean[]values, int index) {
+		if(index>=values.length) index=0; // restart
 		for (int tmp=index+1;tmp<values.length;tmp++) {
 			if(values[tmp]) return tmp;
 		}
 		for (int tmp=0;tmp<index;tmp++) {
 			if(values[tmp]) return tmp;
 		}
-		return -1;
+		return index;
 	}
 	
+	/**
+	 * 
+	 * @param month 0-11
+	 * @param year
+	 * @return
+	 */
 	public static int monthLength(int month, int year) {
 		
 		switch (month) {
-		case 1:case 3:case 5:case 7:case 8:case 10:case 12: return 31;
-		case 4:case 6:case 9:case 11: return 30;
+		case 0:case 2:case 4:case 6:case 7:case 9:case 11: return 31;
+		case 3:case 5:case 8:case 10: return 30;
 		}
 		
 		return  year%4==0 && (year%400==0 || year%100!=0 )  ? 29 : 28;

@@ -79,39 +79,61 @@ public final class LittleJonH {
 		
 		int minute		= currentTime.getMinute();
 		int hour		= currentTime.getHour();
-		int dayOfMonth	= currentTime.getDayOfMonth();
+		int dayOfMonth	= currentTime.getDayOfMonth()-1;
 		int month		= currentTime.getMonthValue()-1;
 		int dayOfWeek	= currentTime.getDayOfWeek().getValue()%7;
 		int year		= currentTime.getYear();
 		
-		if(!months[month]) {
-			month=searchNextOccurence(months, month);
-			dayOfWeek=daysOfWeek[0]?0:searchNextOccurence(daysOfWeek, 0);
-			dayOfMonth=daysOfMonth[0]?0:searchNextOccurence(daysOfMonth, 0);
-			hour=hours[0]?0:searchNextOccurence(hours, 0);
-			minute=minutes[0]? 0 : searchNextOccurence(minutes, 0);
-		} else if (!daysOfMonth[dayOfMonth]) {
-			dayOfMonth=searchNextOccurence(daysOfMonth, dayOfMonth);
-			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
-			hour=hours[0]?0:searchNextOccurence(hours, 0);
-			minute=minutes[0]? 0 : searchNextOccurence(minutes, 0);
-		}else if (!hours[hour]) {
-			hour=searchNextOccurence(hours, hour);
-			dayOfWeek=hour<currentTime.getHour()?searchNextOccurence(daysOfWeek, dayOfWeek):dayOfWeek;
-			dayOfMonth=hour<currentTime.getHour()?searchNextOccurence(daysOfMonth, dayOfMonth):dayOfMonth;
-			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
-			minute=minutes[0]? 0 : searchNextOccurence(minutes, 0);
-		} else {
-			minute =searchNextOccurence(minutes, minute);
-			hour=minute<currentTime.getMinute()?searchNextOccurence(hours, hour): hour;
-			dayOfWeek=hour<currentTime.getHour()?searchNextOccurence(daysOfWeek, dayOfWeek):dayOfWeek;
-			dayOfMonth=hour<currentTime.getHour()?searchNextOccurence(daysOfMonth, dayOfMonth):dayOfMonth;
-			month=dayOfMonth<currentTime.getDayOfMonth()?searchNextOccurence(months, month):month;
+		int tmp=0,tmp2=0;
+		
+		tmp=searchNextOccurence(minutes, minute); //update minute
+		tmp2=tmp<=minute?hour+1:hour; // update hour
+		minute=tmp; // update minute
+		tmp=tmp2<hour?dayOfMonth+1:dayOfMonth; // update dM
+		hour=tmp2; // update hour
+		tmp2=tmp<dayOfMonth?month+1:month; // update month
+		dayOfMonth=tmp; // update dM
+		year=tmp2<month?year+1:year; // update year
+		month=tmp2; //Update month
+		
+		while(true) {
+			if( month>=months.length || ! months[month]) {
+				tmp=searchNextOccurence(months, month);
+				year=tmp<=month?year+1:year;
+				dayOfMonth=hour=minute=0;
+				month=tmp;
+			} else if (dayOfMonth>=monthLength(month, year) || ! daysOfMonth[dayOfMonth]) { 
+				tmp=searchNextOccurence(daysOfMonth, dayOfMonth); //update dM
+				tmp2=tmp<=dayOfMonth?month+1:month; // update month
+				dayOfMonth=tmp; // update dM
+				year=tmp2<month?year+1:year; // update year
+				month=tmp2; // update month
+				hour=minute=0;
+			} else if (hour>=hours.length || ! hours[hour]) {
+				tmp=searchNextOccurence(hours, hour); //update Hour
+				tmp2=tmp<=hour?dayOfMonth+1:dayOfMonth; // update dM
+				hour=tmp; // update Hour
+				tmp=tmp2<dayOfMonth?month+1:month; // update Month
+				dayOfMonth=tmp2; // update dM
+				year=tmp<month?year+1:year; // update year
+				month=tmp; // update month
+				minute=0;
+			} else if (minute>=minutes.length || ! minutes[minute]) {
+				tmp=searchNextOccurence(minutes, minute); //update minute
+				tmp2=tmp<=minute?hour+1:hour; // update hour
+				minute=tmp; // update minute
+				tmp=tmp2<hour?dayOfMonth+1:dayOfMonth; // update dM
+				hour=tmp2; // update hour
+				tmp2=tmp<dayOfMonth?month+1:month; // update month
+				dayOfMonth=tmp; // update dM
+				year=tmp2<month?year+1:year; // update year
+				month=tmp2; //Update month
+			} else {
+				break;
+			}
 		}
-		//FIXME con giorno 31 si rompe e non tiene conto dell'ultimo giorno del mese
-		currentTime=LocalDateTime.of(year, month+1, dayOfMonth, hour, minute);
 		
-		
+		currentTime=LocalDateTime.of(year,month+1, dayOfMonth+1, hour, minute);
 		return currentTime;
 	}
 	
