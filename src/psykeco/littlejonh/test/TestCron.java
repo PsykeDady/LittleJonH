@@ -27,14 +27,18 @@ public class TestCron {
 		System.out.println(LittleJonHUtils.analyze("15-30/5",minute,MINUTE_STR)+"\n"); // every minute on ranges from 15 to 30 with 5 steps at a time
 		System.out.println(LittleJonHUtils.analyze("SUN",dayOfWeek,DAY_OF_WEEK_STR)+"\n"); // at day of week 0
 		System.out.println(LittleJonHUtils.analyze("JAN-JUL/2",dayOfWeek,MONTH_STR)+"\n"); // every month on ranges from 1 to 7 with 2 steps at a time
-
 		
-		LittleJonH l=new LittleJonH("1 1/2 31 4,5,12 *");
+		LittleJonH l=new LittleJonH("1 1/2 31 4,5,12 1");
 		System.out.println(l.getCronExpr());
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
 		System.out.println("next "+l.nextT()+'\n'+'\n');
 		
+		l=new LittleJonH("* * * * 1");
+		System.out.println(l.getCronExpr());
+		System.out.println(l.getHuman()+'\n');
+		System.out.println("curr "+l.getCurrent());
+		System.out.println("next "+l.nextT()+'\n'+'\n');
 		
 		l=new LittleJonH("* * * * *");
 		System.out.println(l.getCronExpr());
@@ -53,7 +57,6 @@ public class TestCron {
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
 		System.out.println("next "+l.nextT()+'\n'+'\n');
-		
 		
 		System.out.println("SUNDAY IS "+LittleJonHUtils.indexOfWordlist("SUN",WORDLIST_DAY_OF_WEEK ));
 		System.out.println("JUNE IS "+LittleJonHUtils.indexOfWordlist("JUN",WORDLIST_MONTH ));

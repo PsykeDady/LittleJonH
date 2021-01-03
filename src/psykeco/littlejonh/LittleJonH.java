@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.Month;
 
 import psykeco.littlejonh.constants.CronExprOrder;
+import psykeco.littlejonh.utility.LittleJonHUtils;
+import sun.security.util.Length;
+
 import static psykeco.littlejonh.constants.LittleJonHConstants.ERR_TEXT_WRONG_CRON;
 import static psykeco.littlejonh.constants.LittleJonHConstants.MINUTE_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.HOURS_STR;
@@ -118,7 +121,7 @@ public final class LittleJonH {
 	}
 	
 	public int[] nextMonth(int ...time) {
-		int tmp=0;;
+		int tmp=0;
 		
 		tmp=searchNextOccurence(months, time[3]);
 		time[5]=tmp<=time[3]?time[5]+1:time[5];
@@ -137,8 +140,7 @@ public final class LittleJonH {
 		int year		= currentTime.getYear();
 		
 		int [] time= {minute,hour,dayOfMonth,month,dayOfWeek,year};
-				
-		int tmp=0,tmp2=0;
+		minute=0;hour=1;dayOfMonth=2;month=3;dayOfWeek=4;year=5; // into index. TODO write down for clean		
 		
 		nextMinute(time);
 		
@@ -152,11 +154,17 @@ public final class LittleJonH {
 			} else if (time[0]>=minutes.length || ! minutes[time[0]]) {
 				nextMinute(time);
 			} else {
-				break;
+				currentTime=LocalDateTime.of(time[5],time[3]+1, time[2]+1, time[1], time[0]);
+				time[4]=currentTime.getDayOfWeek().getValue()%7; // TODO waiting for better algorithm..
+				if( daysOfWeek[time[4]] ) break;
+				nextDayOfMonth(time);
 			}
 		}
 		
 		currentTime=LocalDateTime.of(time[5],time[3]+1, time[2]+1, time[1], time[0]);
+		System.out.println(currentTime.getDayOfWeek());
+		System.out.println(time[4]);
+		
 		return currentTime;
 	}
 	
