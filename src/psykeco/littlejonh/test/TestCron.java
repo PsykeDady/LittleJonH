@@ -28,7 +28,7 @@ public class TestCron {
 		System.out.println(LittleJonHUtils.analyze("SUN",dayOfWeek,DAY_OF_WEEK_STR)+"\n"); // at day of week 0
 		System.out.println(LittleJonHUtils.analyze("JAN-JUL/2",dayOfWeek,MONTH_STR)+"\n"); // every month on ranges from 1 to 7 with 2 steps at a time
 		
-		LittleJonH l=new LittleJonH("1 1/2 31 4,5,12 1");
+		LittleJonH l=new LittleJonH("1 1/2 31 4,5,12 6");
 		System.out.println(l.getCronExpr());
 		System.out.println(l.getHuman()+'\n');
 		System.out.println("curr "+l.getCurrent());
