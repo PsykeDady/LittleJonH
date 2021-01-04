@@ -162,8 +162,6 @@ public final class LittleJonH {
 		}
 		
 		currentTime=LocalDateTime.of(time[5],time[3]+1, time[2]+1, time[1], time[0]);
-		System.out.println(currentTime.getDayOfWeek());
-		System.out.println(time[4]);
 		
 		return currentTime;
 	}
