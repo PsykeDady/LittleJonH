@@ -20,12 +20,12 @@ public class TestCron {
 		boolean month		[]=new boolean[31];
 		
 		System.out.println(LittleJonHUtils.analyze("*",minute,MINUTE_STR)+"\n"); //every minute
-		System.out.println(LittleJonHUtils.analyze("6",minute,MINUTE_STR)+"\n"); // at minute 6
-		System.out.println(LittleJonHUtils.analyze("30-40",minute,MINUTE_STR)+"\n"); // every minute on ranges from 30 to 40
-		System.out.println(LittleJonHUtils.analyze("14,18",minute,MINUTE_STR)+"\n"); // at minute 14 and at minute 18
-		System.out.println(LittleJonHUtils.analyze("5/10",minute,MINUTE_STR)+"\n"); // every minute from 5 with 10 steps at a time
-		System.out.println(LittleJonHUtils.analyze("*/4",minute,MINUTE_STR)+"\n"); // every minute 4 steps at a tmie
-		System.out.println(LittleJonHUtils.analyze("15-30/5",minute,MINUTE_STR)+"\n"); // every minute on ranges from 15 to 30 with 5 steps at a time
+		System.out.println(LittleJonHUtils.analyze("6",new boolean[60],MINUTE_STR)+"\n"); // at minute 6
+		System.out.println(LittleJonHUtils.analyze("30-40",new boolean[60],MINUTE_STR)+"\n"); // every minute on ranges from 30 to 40
+		System.out.println(LittleJonHUtils.analyze("14,18",new boolean[60],MINUTE_STR)+"\n"); // at minute 14 and at minute 18
+		System.out.println(LittleJonHUtils.analyze("5/10",new boolean[60],MINUTE_STR)+"\n"); // every minute from 5 with 10 steps at a time
+		System.out.println(LittleJonHUtils.analyze("*/4",new boolean[60],MINUTE_STR)+"\n"); // every minute 4 steps at a tmie
+		System.out.println(LittleJonHUtils.analyze("15-30/5",new boolean[60],MINUTE_STR)+"\n"); // every minute on ranges from 15 to 30 with 5 steps at a time
 		System.out.println(LittleJonHUtils.analyze("SUN",dayOfWeek,DAY_OF_WEEK_STR)+"\n"); // at day of week 0
 		System.out.println(LittleJonHUtils.analyze("JAN-JUL/2",month,MONTH_STR)+"\n"); // every month on ranges from 1 to 7 with 2 steps at a time
 		
