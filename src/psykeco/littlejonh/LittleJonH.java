@@ -17,6 +17,7 @@ import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_WEEK_STR;
 import static psykeco.littlejonh.utility.LittleJonHUtils.analyze;
 import static psykeco.littlejonh.utility.LittleJonHUtils.searchNextOccurence;
 import static psykeco.littlejonh.utility.LittleJonHUtils.monthLength;
+import static psykeco.littlejonh.constants.CronExprOrder.*;
 
 
 public final class LittleJonH {
@@ -50,7 +51,7 @@ public final class LittleJonH {
 		
 		String [] splitCron = this.cronExpr.split(" ");
 		
-		if (splitCron.length != CronExprOrder.values().length) {
+		if (splitCron.length != CronExprOrder.values().length-1) {
 			throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 		}
 		
@@ -78,55 +79,43 @@ public final class LittleJonH {
 		return currentTime;
 	}
 	
-	private int[] nextMinute(int ... time) {
-		int tmp=0,tmp2=0;
-		tmp=searchNextOccurence(minutes, time[0]); //update minute
-		tmp2=tmp<=time[0]?time[1]+1:time[1]; // update hour
-		time[0]=tmp; // update minute
-		tmp=tmp2<time[1]?time[3]+1:time[3]; // update dM
-		time[1]=tmp2; // update hour
-		tmp2=tmp<time[3]?time[4]+1:time[4]; // update month
-		time[3]=tmp; // update dM
-		time[5]=tmp2<time[4]?time[5]+1:time[5]; // update year
-		time[4]=tmp2; //Update month
+	private int[] nextMinute(int [] time) {
+		int tmp=0;
+		tmp=searchNextOccurence(minutes, time[MINUTE.ordinal()]); //update minute
+		time[HOURS.ordinal()]=tmp<=time[MINUTE.ordinal()]?time[HOURS.ordinal()]+1:time[HOURS.ordinal()]; // update hour
+		time[MINUTE.ordinal()]=tmp; // update minute
 		
 		return time;
 	}
 	
-	private int[] nextHour(int...time) {
-		int tmp=0,tmp2=0;
-		tmp=searchNextOccurence(hours, time[1]); //update Hour
-		tmp2=tmp<=time[1]?time[2]+1:time[2]; // update dM
-		time[1]=tmp; // update Hour
-		tmp=tmp2<time[2]?time[3]+1:time[3]; // update Month
-		time[2]=tmp2; // update dM
-		time[5]=tmp<time[3]?time[5]+1:time[5]; // update year
-		time[3]=tmp; // update month
-		time[0]=0;
+	private int[] nextHour(int [] time) {
+		int tmp=0;
+		tmp=searchNextOccurence(hours, time[HOURS.ordinal()]); //update Hour
+		time[DAY_OF_MONTH.ordinal()]=tmp<=time[HOURS.ordinal()]?time[DAY_OF_MONTH.ordinal()]+1:time[DAY_OF_MONTH.ordinal()]; // update dM
+		time[HOURS.ordinal()]=tmp; // update Hour
+		time[MINUTE.ordinal()]=0;
 		
 		return time;
 	}
 	
 	private int[] nextDayOfMonth(int [] time) {
-		int tmp=0,tmp2=0;
+		int tmp=0;
 		
-		tmp=searchNextOccurence(daysOfMonth, time[2]); //update dM
-		tmp2=tmp<=time[2]?time[3]+1:time[3]; // update month
-		time[2]=tmp; // update dM
-		time[5]=tmp2<time[3]?time[5]+1:time[5]; // update year
-		time[3]=tmp2; // update month
-		time[1]=time[0]=0;
+		tmp=searchNextOccurence(daysOfMonth, time[DAY_OF_MONTH.ordinal()]); //update dM
+		time[MONTH.ordinal()]=tmp<=time[DAY_OF_MONTH.ordinal()]?time[MONTH.ordinal()]+1:time[MONTH.ordinal()]; // update month
+		time[DAY_OF_MONTH.ordinal()]=tmp; // update dM
+		time[HOURS.ordinal()]=time[MINUTE.ordinal()]=0;
 		
 		return time;
 	}
 	
-	public int[] nextMonth(int ...time) {
+	public int[] nextMonth(int [] time) {
 		int tmp=0;
 		
-		tmp=searchNextOccurence(months, time[3]);
-		time[5]=tmp<=time[3]?time[5]+1:time[5];
-		time[3]=tmp;
-		time[2]=time[1]=time[0]=0;
+		tmp=searchNextOccurence(months, time[MONTH.ordinal()]);
+		time[YEAR.ordinal()]=tmp<=time[MONTH.ordinal()]?time[YEAR.ordinal()]+1:time[YEAR.ordinal()];
+		time[MONTH.ordinal()]=tmp;
+		time[DAY_OF_MONTH.ordinal()]=time[HOURS.ordinal()]=time[MINUTE.ordinal()]=0;
 		
 		return time;
 	}
@@ -140,28 +129,27 @@ public final class LittleJonH {
 		int year		= currentTime.getYear();
 		
 		int [] time= {minute,hour,dayOfMonth,month,dayOfWeek,year};
-		minute=0;hour=1;dayOfMonth=2;month=3;dayOfWeek=4;year=5; // into index. TODO write down for clean		
 		
 		nextMinute(time);
 		
 		while(true) {
-			if( time[3]>=months.length || ! months[time[3]]) {
+			if( time[MONTH.ordinal()]>=months.length || ! months[time[MONTH.ordinal()]]) {
 				nextMonth(time);
-			} else if (time[2]>=monthLength(time[3], time[5]) || ! daysOfMonth[time[2]]) { 
+			} else if (time[DAY_OF_MONTH.ordinal()]>=monthLength(time[MONTH.ordinal()], time[YEAR.ordinal()]) || ! daysOfMonth[time[DAY_OF_MONTH.ordinal()]]) { 
 				nextDayOfMonth(time);
-			} else if (time[1]>=hours.length || ! hours[time[1]]) {
+			} else if (time[HOURS.ordinal()]>=hours.length || ! hours[time[HOURS.ordinal()]]) {
 				nextHour(time);
-			} else if (time[0]>=minutes.length || ! minutes[time[0]]) {
+			} else if (time[MINUTE.ordinal()]>=minutes.length || ! minutes[time[MINUTE.ordinal()]]) {
 				nextMinute(time);
 			} else {
-				currentTime=LocalDateTime.of(time[5],time[3]+1, time[2]+1, time[1], time[0]);
-				time[4]=currentTime.getDayOfWeek().getValue()%7; // TODO waiting for better algorithm..
-				if( daysOfWeek[time[4]] ) break;
+				currentTime=LocalDateTime.of(time[YEAR.ordinal()],time[MONTH.ordinal()]+1, time[DAY_OF_MONTH.ordinal()]+1, time[HOURS.ordinal()], time[MINUTE.ordinal()]);
+				time[DAY_OF_WEEK.ordinal()]=currentTime.getDayOfWeek().getValue()%7; // TODO waiting for better algorithm..
+				if( daysOfWeek[time[DAY_OF_WEEK.ordinal()]] ) break;
 				nextDayOfMonth(time);
 			}
 		}
 		
-		currentTime=LocalDateTime.of(time[5],time[3]+1, time[2]+1, time[1], time[0]);
+		currentTime=LocalDateTime.of(time[YEAR.ordinal()],time[MONTH.ordinal()]+1, time[DAY_OF_MONTH.ordinal()]+1, time[HOURS.ordinal()], time[MINUTE.ordinal()]);
 		
 		return currentTime;
 	}

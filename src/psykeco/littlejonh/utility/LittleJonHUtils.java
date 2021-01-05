@@ -141,7 +141,7 @@ public final class LittleJonHUtils {
 	}
 	
 	public static int searchNextOccurence(boolean[]values, int index) {
-		if(index>=values.length) index=0; // restart
+		if(index>values.length) index=0; // restart
 		for (int tmp=index+1;tmp<values.length;tmp++) {
 			if(values[tmp]) return tmp;
 		}

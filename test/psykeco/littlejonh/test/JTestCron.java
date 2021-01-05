@@ -7,6 +7,9 @@ import static psykeco.littlejonh.constants.LittleJonHConstants.MONTH_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.WORDLIST_DAY_OF_WEEK;
 import static psykeco.littlejonh.constants.LittleJonHConstants.WORDLIST_MONTH;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 import org.junit.jupiter.api.Test;
 
 import psykeco.littlejonh.LittleJonH;
@@ -138,37 +141,203 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextTest() {
-		assertTrue(true);
-		LittleJonH l=new LittleJonH("1 1/2 31 4,5,12 6");
-		System.out.println(l.getCronExpr());
-		System.out.println(l.getHuman()+'\n');
-		System.out.println("curr "+l.getCurrent());
-		System.out.println("next "+l.nextT()+'\n'+'\n');
+	void nextComplete() {
+		String cronExpr="1 1/2 31 4,5,12 6";
+		String human=
+			"at minute 1"+ '\n'+
+			"every hour from 1 with 2 steps at a time"+ '\n'+
+			"at day of month 31"+ '\n'+
+			"at month 4 and at month 5 and at month 12"+ '\n'+
+			"at day of week 6"
+		;
 		
-		l=new LittleJonH("* * * * 1");
-		System.out.println(l.getCronExpr());
-		System.out.println(l.getHuman()+'\n');
-		System.out.println("curr "+l.getCurrent());
-		System.out.println("next "+l.nextT()+'\n'+'\n');
+		LittleJonH l=new LittleJonH(cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman(),human);
+		LocalDateTime after=LocalDateTime.of(2022, Month.DECEMBER, 31, 01, 01);
+		l.setCurrentTime(LocalDateTime.of(2020, Month.JANUARY, 05, 18, 00));
+		assertEquals(l.nextT(),after);
+	}
 		
-		l=new LittleJonH("* * * * *");
-		System.out.println(l.getCronExpr());
-		System.out.println(l.getHuman()+'\n');
-		System.out.println("curr "+l.getCurrent());
-		System.out.println("next "+l.nextT()+'\n'+'\n');
+	@Test
+	void nextMinute() {
+		String cronExpr="* * * * *";
+		String human=
+			"every minute"+ '\n'+
+			"every hour"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
 		
-		l=new LittleJonH("* 16/2 * * *");
-		System.out.println(l.getCronExpr());
-		System.out.println(l.getHuman()+'\n');
-		System.out.println("curr "+l.getCurrent());
-		System.out.println("next "+l.nextT()+'\n'+'\n');
+		LittleJonH l=new LittleJonH(cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman(),human);
+		LocalDateTime n=LocalDateTime.now();
+		l.setCurrentTime(n);
+		assertEquals((n.getMinute()+1)%60,l.nextT().getMinute());
 		
-		l=new LittleJonH("1 * * * *");
-		System.out.println(l.getCronExpr());
-		System.out.println(l.getHuman()+'\n');
-		System.out.println("curr "+l.getCurrent());
-		System.out.println("next "+l.nextT()+'\n'+'\n');
+	}
+	
+	@Test
+	void nextMinuteChangeAll() {
+		String cronExpr="* * * * *";
+		String human=
+			"every minute"+ '\n'+
+			"every hour"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH( cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman()   ,human);
+		LocalDateTime after=LocalDateTime.of(2019, Month.JANUARY, 1, 00, 00);
+		l.setCurrentTime(LocalDateTime.of(2018, Month.DECEMBER, 31, 23, 59));
+		LocalDateTime n=l.nextT();
+		assertEquals(n,after);
+	}
+	
+	@Test
+	void nextMinuteChangeFEB29() {
+		String cronExpr="* * * * *";
+		String human=
+			"every minute"+ '\n'+
+			"every hour"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH( cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman()   ,human);
+		LocalDateTime after=LocalDateTime.of(2020, Month.MARCH, 1, 00, 00);
+		l.setCurrentTime(LocalDateTime.of(2020, Month.FEBRUARY, 29, 23, 59));
+		LocalDateTime n=l.nextT();
+		assertEquals(n,after);
+	}
+	
+	@Test
+	void nextMinuteChangeFEB28() {
+		String cronExpr="* * * * *";
+		String human=
+			"every minute"+ '\n'+
+			"every hour"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH( cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman()   ,human);
+		LocalDateTime after=LocalDateTime.of(2021, Month.MARCH, 1, 00, 00);
+		l.setCurrentTime(LocalDateTime.of(2021, Month.FEBRUARY, 28, 23, 59));
+		LocalDateTime n=l.nextT();
+		assertEquals(n,after);
+	}
+	
+	@Test
+	void nextMinuteChangeAPR() {
+		String cronExpr="* * * * *";
+		String human=
+			"every minute"+ '\n'+
+			"every hour"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH( cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman()   ,human);
+		LocalDateTime after=LocalDateTime.of(2021, Month.MAY, 1, 00, 00);
+		l.setCurrentTime(LocalDateTime.of(2021, Month.APRIL, 30, 23, 59));
+		LocalDateTime n=l.nextT();
+		assertEquals(n,after);
+	}
+	
+	@Test
+	void nextAtDayWeek() {
+		String cronExpr="1 20 * * MON";
+		String human=
+			"at minute 1"+ '\n'+
+			"at hour 20"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"at day of week 1"
+		;
+		
+		LittleJonH l=new LittleJonH(cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman(),human);
+		LocalDateTime after=LocalDateTime.of(2018, Month.JUNE, 11, 20, 01);
+		l.setCurrentTime(LocalDateTime.of(2018, Month.JUNE, 04, 20, 01));
+		LocalDateTime n=l.nextT();
+		assertEquals(n,after);
+	}
+	
+	@Test
+	void nextAtMonths() {
+		String cronExpr="0 0 1 FEB,JUN *";
+		String human=
+			"at minute 0"+ '\n'+
+			"at hour 0"+ '\n'+
+			"at day of month 1"+ '\n'+
+			"at month 2 and at month 6"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH(cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman(),human);
+		LocalDateTime after=LocalDateTime.of(2020, Month.FEBRUARY, 01, 00, 00);
+		l.setCurrentTime(LocalDateTime.of(2020, Month.JANUARY, 11, 20, 01));
+		LocalDateTime n=l.nextT();
+		assertEquals(n,after);
+		after=LocalDateTime.of(2020, Month.JUNE, 01, 00, 00);
+		n=l.nextT();
+		assertEquals(after,n);
+	}
+	
+	@Test 
+	void nextPreciseDayWithStep(){
+		String cronExpr="* 16/2 * * *";
+		String human=
+			"every minute"+ '\n'+
+			"every hour from 16 with 2 steps at a time"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH(cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman(),human);
+		LocalDateTime after=LocalDateTime.of(2019, Month.JULY, 1, 18, 00);
+		l.setCurrentTime(LocalDateTime.of(2019, Month.JULY, 1, 17, 43));
+		assertEquals(l.nextT(),after);
+	}
+	
+	@Test
+	void nextMinuteAt() {
+		String cronExpr="1 * * * *";
+		String human=
+			"at minute 1"+ '\n'+
+			"every hour"+ '\n'+
+			"every day of month"+ '\n'+
+			"every month"+ '\n'+
+			"every day of week"
+		;
+		
+		LittleJonH l=new LittleJonH(cronExpr);
+		assertEquals(l.getCronExpr(),cronExpr);
+		assertEquals(l.getHuman(),human);
+		LocalDateTime after=LocalDateTime.of(2019, Month.APRIL, 15, 16, 01);
+		l.setCurrentTime(LocalDateTime.of(2019, Month.APRIL, 15, 15, 15));
+		assertEquals(l.nextT(),after);
 	}
 
 }
