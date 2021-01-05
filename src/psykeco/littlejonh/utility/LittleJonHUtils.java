@@ -110,7 +110,7 @@ public final class LittleJonHUtils {
 				if (i!=cron.length()-1) sb.append(" and ");
 			}
 		}
-		return sb.toString();
+		return sb.toString().trim();
 	}
 	
 	public static String searchWordlist(String what) {
