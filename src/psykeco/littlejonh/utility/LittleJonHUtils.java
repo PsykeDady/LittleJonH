@@ -7,6 +7,12 @@ import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_WEEK_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.WORDLIST_DAY_OF_WEEK;
 import static psykeco.littlejonh.constants.LittleJonHConstants.WORDLIST_MONTH;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 
 
 
@@ -159,5 +165,11 @@ public final class LittleJonHUtils {
 		}
 		
 		return  year%4==0 && (year%400==0 || year%100!=0 )  ? 29 : 28;
+	}
+	
+	public static Date localDateToDate(LocalDateTime d) {
+		return Date.from(
+				d.atZone(ZoneId.systemDefault()).toInstant()
+		);
 	}
 }
