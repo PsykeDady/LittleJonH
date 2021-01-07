@@ -44,10 +44,11 @@ public final class LittleJonHUtils {
 		for (int i=0; i<cron.length(); i++) {
 			char c=cron.charAt(i);
 			if (Character.isAlphabetic(c)) {
-				if(tmp!=-1) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON); 
+				if(tmp!=-1||globStar) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON); 
 				wordb.append(c);
 			} else if (Character.isDigit(c)) {
-				if (! wordb.toString().equals("")) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON); 
+				if (! wordb.toString().equals("")
+					|| ( globStar && !isStep )) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON); 
 				tmp=(tmp==-1)?0:tmp;
 				tmp=tmp*10+(int)(c-'0');
 			} else if (c=='/') {

@@ -14,6 +14,7 @@ import static psykeco.littlejonh.constants.LittleJonHConstants.HOURS_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_MONTH_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.MONTH_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_WEEK_STR;
+import static psykeco.littlejonh.constants.LittleJonHConstants.MAX_YEAR_TRY;
 import static psykeco.littlejonh.utility.LittleJonHUtils.analyze;
 import static psykeco.littlejonh.utility.LittleJonHUtils.searchNextOccurence;
 import static psykeco.littlejonh.utility.LittleJonHUtils.monthLength;
@@ -109,7 +110,7 @@ public final class LittleJonH {
 		return time;
 	}
 	
-	public int[] nextMonth(int [] time) {
+	private int[] nextMonth(int [] time) {
 		int tmp=0;
 		
 		tmp=searchNextOccurence(months, time[MONTH.ordinal()]);
@@ -131,10 +132,12 @@ public final class LittleJonH {
 		int [] time= {minute,hour,dayOfMonth,month,dayOfWeek,year};
 		
 		nextMinute(time);
-		
-		while(true) {
+		int max_repeat=MAX_YEAR_TRY;
+		while(max_repeat>-1) {
 			if( time[MONTH.ordinal()]>=months.length || ! months[time[MONTH.ordinal()]]) {
+				int y=time[YEAR.ordinal()];
 				nextMonth(time);
+				if ( y!=time[YEAR.ordinal()]) max_repeat--;
 			} else if (time[DAY_OF_MONTH.ordinal()]>=monthLength(time[MONTH.ordinal()], time[YEAR.ordinal()]) || ! daysOfMonth[time[DAY_OF_MONTH.ordinal()]]) { 
 				nextDayOfMonth(time);
 			} else if (time[HOURS.ordinal()]>=hours.length || ! hours[time[HOURS.ordinal()]]) {
@@ -147,6 +150,9 @@ public final class LittleJonH {
 				if( daysOfWeek[time[DAY_OF_WEEK.ordinal()]] ) break;
 				nextDayOfMonth(time);
 			}
+		}
+		if(max_repeat==-1) {
+			throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 		}
 		
 		currentTime=LocalDateTime.of(time[YEAR.ordinal()],time[MONTH.ordinal()]+1, time[DAY_OF_MONTH.ordinal()]+1, time[HOURS.ordinal()], time[MINUTE.ordinal()]);

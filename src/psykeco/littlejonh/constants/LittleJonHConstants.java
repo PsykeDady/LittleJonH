@@ -18,7 +18,7 @@ public final class LittleJonHConstants {
 	public final static String WORDLIST_MONTH="\0\0\0JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC"; // \0\0\0 is added to match range 1-12
 	public final static String WORDLIST_DAY_OF_WEEK="SUNMONTUEWEDTHUFRISAT";
 	
-	/** in cron expression, * sign stand for "every", on variabiles we have this constant */
-	public final static int EVERY_STAR = -1;
+	/** max year increment of {@link LittleJonH #nextT() nextT} and {@link LittleJonH #prevT() prevT} for searching a next possible value*/
+	public final static int MAX_YEAR_TRY = 4;
 
 }
