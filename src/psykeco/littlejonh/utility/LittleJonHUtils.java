@@ -24,7 +24,7 @@ public final class LittleJonHUtils {
 	
 	public static String analyze(String cron, boolean [] output, String what) {
 		//separate values
-		int step=1, start=0, end = output.length-1;
+		int step=1, start=-1, end = output.length-1, tmp=-1;
 		boolean isStep=false, isRange=false,globStar=false;
 		StringBuilder sb= new StringBuilder(500),wordb=new StringBuilder(10);
 		
@@ -44,48 +44,77 @@ public final class LittleJonHUtils {
 		for (int i=0; i<cron.length(); i++) {
 			char c=cron.charAt(i);
 			if (Character.isAlphabetic(c)) {
-				 wordb.append(c);
+				if(tmp!=-1) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON); 
+				wordb.append(c);
 			} else if (Character.isDigit(c)) {
-				if (isStep )step=step*10+(int)(c-'0');
-				else if ( isRange && ! globStar ) end=end*10+(int)(c-'0');
-				else if ( ! globStar ) start=(10*start)+(int)(c-'0');
-				else new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+				if (! wordb.toString().equals("")) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON); 
+				tmp=(tmp==-1)?0:tmp;
+				tmp=tmp*10+(int)(c-'0');
 			} else if (c=='/') {
 				String word=wordb.toString();
 				if( !word.equals("")) {
 					int indW=indexOfWordlist(word, wordlist);
 					if (isRange) end=indW;
 					else start=indW;
+					wordb=new StringBuilder(10);
+				}else {
+					if (tmp==-1)throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+					if(isRange) end=tmp;
+					else start=tmp;
+					tmp=-1;
 				}
-				wordb=new StringBuilder(10);
 				isStep=true;
-				step=0;
 			}  else if ( c=='*') {
-				if (!wordb.toString().equals("")|| start!=0) new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+				if (!wordb.toString().equals("")|| tmp!=-1) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+				tmp=start=0;
+				end=output.length-1;
 				if(what.equals(MONTH_STR) || what.equals(DAY_OF_MONTH_STR)) {
-					start=1;
-					end=output.length;
+					tmp++;
+					start++;
+					end++;
 				}
 				globStar=true;
 			} else if (c=='-') {
+				if(globStar || isStep ) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 				String word=wordb.toString();
 				if( !word.equals("")) {
 					start=indexOfWordlist(word, wordlist);
+					wordb=new StringBuilder(10);
+				} else {
+					if (tmp==-1) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+					start=tmp;
+					tmp=-1;
 				}
-				wordb=new StringBuilder(10);
-				if(globStar) new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 				isRange=true;
-				end=0;
+				end=-1;
 			}
 			if (c==','||i==cron.length()-1){
 				String word=wordb.toString();
 				if( !word.equals("")) {
 					int indW=indexOfWordlist(word, wordlist);
+					if(indW==-1) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 					if (isRange) end=indW;
+					else if (isStep) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 					else start=indW;
+				} else {
+					if(tmp==-1) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+					if (isStep) step=tmp;
+					else if (isRange) end=tmp;
+					else start=tmp;
 				}
 				if (isRange && end<start) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
+				
+				// create human
+				if(!globStar && !isRange && !isStep) sb.append("at "+what+" "+start);
+				else if(!globStar && !isRange) sb.append("every "+what+" from "+start+" ");
+				else if(!globStar) sb.append("every "+what+" on ranges from "+start+" ");
+				else if (globStar) sb.append("every "+what+" ");
+				
+				if(isRange) sb.append("to "+end+" ");
+				
+				if(isStep && step>1) sb.append("with "+step+" steps at a time");
 
+				// apply
 				if(what.equals(MONTH_STR) || what.equals(DAY_OF_MONTH_STR)) {
 					start--;
 					end--;
@@ -96,21 +125,8 @@ public final class LittleJonHUtils {
 					if (output [j]) throw new IllegalArgumentException(ERR_TEXT_WRONG_CRON);
 					else output [j]=true;
 				
-				if(what.equals(MONTH_STR) || what.equals(DAY_OF_MONTH_STR)) {
-					start++;
-					end++;
-				}
-				
-				if(!globStar && !isRange && !isStep) sb.append("at "+what+" "+start);
-				else if(!globStar && !isRange) sb.append("every "+what+" from "+start+" ");
-				else if(!globStar) sb.append("every "+what+" on ranges from "+start+" ");
-				else if (globStar) sb.append("every "+what+" ");
-				
-				if(isRange) sb.append("to "+end+" ");
-				
-				if(isStep && step>1) sb.append("with "+step+" steps at a time");
-				
-				step=1; start=0; end = output.length;
+				//reset 
+				step=1; start=-1; end = output.length; tmp=-1;
 				wordb=new StringBuilder(10); word="";
 				isStep=false; isRange=false; globStar=false;
 				if (i!=cron.length()-1) sb.append(" and ");
