@@ -18,5 +18,4 @@
 - find better algorithm to calculate dayOfWeek
 
 ## FIX/BUG
-- range can have end>start
-- using a word from step can cause infinite loop
+
