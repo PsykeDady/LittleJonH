@@ -1,7 +1,7 @@
 # LittleJonH
 *Little Java crON Helper*
 
-
+`version=0.1`
 
 > **<u>ATTENTION</u>**:  
 > sorry for international people, software and comments into software are entirely in Italian for now  
