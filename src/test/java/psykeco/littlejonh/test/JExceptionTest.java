@@ -13,7 +13,7 @@ import psykeco.littlejonh.utility.LittleJonHUtils;
  * @author psykedady
  *
  */
-class JTestException {
+class JExceptionTest {
 
 	@Test
 	void AnalyzeExceptionWORD() {

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import psykeco.littlejonh.LittleJonH;
 import psykeco.littlejonh.utility.LittleJonHUtils;
 
-class JTestCron {
+class JCronTest {
 
 	@Test
 	void analyzeEveryMinute() {
@@ -108,7 +108,6 @@ class JTestCron {
 		for(int i=0;i<month.length;i++) 
 			if(0<=i && i<=6 && i%2==0)	 assertTrue(month[i]);
 			else 				assertFalse(month[i]);
-		
 	}
 	
 	@Test
@@ -301,7 +300,7 @@ class JTestCron {
 		n=l.nextT();
 		assertEquals(after,n);
 	}
-	
+
 	@Test 
 	void nextPreciseDayWithStep(){
 		String cronExpr="* 16/2 * * *";

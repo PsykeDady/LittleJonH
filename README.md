@@ -1,6 +1,12 @@
 # LittleJonH
 *Little Java crON Helper*
 
+## How to run tests
+
+```bash
+mvn test
+```
+
 `version=0.1`
 
 > **<u>ATTENTION</u>**:  

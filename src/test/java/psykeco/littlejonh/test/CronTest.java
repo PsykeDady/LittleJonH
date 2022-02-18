@@ -10,9 +10,8 @@ import psykeco.littlejonh.LittleJonH;
 import psykeco.littlejonh.utility.LittleJonHUtils;
 
 
-public class TestCron {
+public class CronTest {
 	public static void main(String[] args) {
-		
 		boolean minute		[]=new boolean[60];
 		boolean dayOfWeek	[]=new boolean[ 7];
 		boolean month		[]=new boolean[31];
