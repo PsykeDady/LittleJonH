@@ -6,7 +6,6 @@ import java.time.Month;
 
 import psykeco.littlejonh.constants.CronExprOrder;
 import psykeco.littlejonh.utility.LittleJonHUtils;
-import sun.security.util.Length;
 
 import static psykeco.littlejonh.constants.LittleJonHConstants.ERR_TEXT_WRONG_CRON;
 import static psykeco.littlejonh.constants.LittleJonHConstants.MINUTE_STR;

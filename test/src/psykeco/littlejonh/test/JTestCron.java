@@ -1,6 +1,6 @@
 package psykeco.littlejonh.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 import static psykeco.littlejonh.constants.LittleJonHConstants.DAY_OF_WEEK_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.MINUTE_STR;
 import static psykeco.littlejonh.constants.LittleJonHConstants.MONTH_STR;
@@ -10,15 +10,15 @@ import static psykeco.littlejonh.constants.LittleJonHConstants.WORDLIST_MONTH;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import psykeco.littlejonh.LittleJonH;
 import psykeco.littlejonh.utility.LittleJonHUtils;
 
-class JTestCron {
+public class JTestCron {
 
 	@Test
-	void analyzeEveryMinute() {
+	public void analyzeEveryMinute() {
 		// every minute test
 		boolean minute		[]=new boolean[60];
 		String analysis=LittleJonHUtils.analyze("*",minute,MINUTE_STR);
@@ -28,7 +28,7 @@ class JTestCron {
 	}
 	
 	@Test 
-	void analyzeAt() {
+	public void analyzeAt() {
 		//at minute 6 test
 		boolean minute[]=new boolean[60];
 		String analysis=LittleJonHUtils.analyze("6",minute,MINUTE_STR);
@@ -39,7 +39,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeRange() {
+	public void analyzeRange() {
 		//every 30<minute<40 
 		boolean [] minute	=new boolean[60];
 		String analysis=LittleJonHUtils.analyze("30-40",minute,MINUTE_STR);
@@ -50,7 +50,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeMultiValue() {
+	public void analyzeMultiValue() {
 		boolean [] minute	=new boolean[60];
 		String analysis=LittleJonHUtils.analyze("14,18",minute,MINUTE_STR);
 		assertEquals(analysis, "at minute 14 and at minute 18");
@@ -60,7 +60,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeFromStep() {
+	public void analyzeFromStep() {
 		boolean [] minute	=new boolean[60];
 		String analysis=LittleJonHUtils.analyze("5/10",minute,MINUTE_STR);
 		assertEquals(analysis, "every minute from 5 with 10 steps at a time");
@@ -70,7 +70,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeStepOnly() {
+	public void analyzeStepOnly() {
 		boolean [] minute	=new boolean[60];
 		String analysis=LittleJonHUtils.analyze("*/4",minute,MINUTE_STR);
 		assertEquals(analysis, "every minute with 4 steps at a time");
@@ -80,7 +80,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeStepRange() {
+	public void analyzeStepRange() {
 		boolean [] minute =new boolean[60];
 		String analysis=LittleJonHUtils.analyze("15-30/5",minute,MINUTE_STR);
 		assertEquals(analysis, "every minute on ranges from 15 to 30 with 5 steps at a time");
@@ -91,7 +91,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeWordList() {
+	public void analyzeWordList() {
 		boolean dayOfWeek	[]=new boolean[ 7];
 		String analysis=LittleJonHUtils.analyze("SUN",dayOfWeek,DAY_OF_WEEK_STR);
 		assertEquals(analysis, "at day of week 0");
@@ -101,18 +101,17 @@ class JTestCron {
 	}
 	
 	@Test
-	void analyzeWordListStepRange() {
+	public void analyzeWordListStepRange() {
 		boolean month[]=new boolean[31];
 		String analysis=LittleJonHUtils.analyze("JAN-JUL/2",month,MONTH_STR);
 		assertEquals(analysis, "every month on ranges from 1 to 7 with 2 steps at a time");
 		for(int i=0;i<month.length;i++) 
 			if(0<=i && i<=6 && i%2==0)	 assertTrue(month[i]);
 			else 				assertFalse(month[i]);
-		
 	}
 	
 	@Test
-	void indexOfWeekWordList() {
+	public void indexOfWeekWordList() {
 		int i=0;
 		assertEquals(LittleJonHUtils.indexOfWordlist("SUN",WORDLIST_DAY_OF_WEEK ), i++);
 		assertEquals(LittleJonHUtils.indexOfWordlist("MON",WORDLIST_DAY_OF_WEEK ), i++);
@@ -124,7 +123,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void indexOfMonthWordList() {
+	public void indexOfMonthWordList() {
 		int i=1;
 		assertEquals(LittleJonHUtils.indexOfWordlist("JAN",WORDLIST_MONTH ), i++);
 		assertEquals(LittleJonHUtils.indexOfWordlist("FEB",WORDLIST_MONTH ), i++);
@@ -141,7 +140,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextComplete() {
+	public void nextComplete() {
 		String cronExpr="1 1/2 31 4,5,12 6";
 		String human=
 			"at minute 1"+ '\n'+
@@ -160,7 +159,7 @@ class JTestCron {
 	}
 		
 	@Test
-	void nextMinute() {
+	public void nextMinute() {
 		String cronExpr="* * * * *";
 		String human=
 			"every minute"+ '\n'+
@@ -180,7 +179,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextMinuteChangeAll() {
+	public void nextMinuteChangeAll() {
 		String cronExpr="* * * * *";
 		String human=
 			"every minute"+ '\n'+
@@ -200,7 +199,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextMinuteChangeFEB29() {
+	public void nextMinuteChangeFEB29() {
 		String cronExpr="* * * * *";
 		String human=
 			"every minute"+ '\n'+
@@ -220,7 +219,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextMinuteChangeFEB28() {
+	public void nextMinuteChangeFEB28() {
 		String cronExpr="* * * * *";
 		String human=
 			"every minute"+ '\n'+
@@ -240,7 +239,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextMinuteChangeAPR() {
+	public void nextMinuteChangeAPR() {
 		String cronExpr="* * * * *";
 		String human=
 			"every minute"+ '\n'+
@@ -260,7 +259,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextAtDayWeek() {
+	public void nextAtDayWeek() {
 		String cronExpr="1 20 * * MON";
 		String human=
 			"at minute 1"+ '\n'+
@@ -280,7 +279,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextAtMonths() {
+	public void nextAtMonths() {
 		String cronExpr="0 0 1 FEB,JUN *";
 		String human=
 			"at minute 0"+ '\n'+
@@ -303,7 +302,7 @@ class JTestCron {
 	}
 	
 	@Test 
-	void nextPreciseDayWithStep(){
+	public void nextPreciseDayWithStep(){
 		String cronExpr="* 16/2 * * *";
 		String human=
 			"every minute"+ '\n'+
@@ -322,7 +321,7 @@ class JTestCron {
 	}
 	
 	@Test
-	void nextMinuteAt() {
+	public void nextMinuteAt() {
 		String cronExpr="1 * * * *";
 		String human=
 			"at minute 1"+ '\n'+

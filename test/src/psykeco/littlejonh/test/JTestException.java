@@ -1,9 +1,9 @@
 package psykeco.littlejonh.test;
 
 import static psykeco.littlejonh.constants.LittleJonHConstants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import psykeco.littlejonh.LittleJonH;
 import psykeco.littlejonh.utility.LittleJonHUtils;
@@ -13,10 +13,10 @@ import psykeco.littlejonh.utility.LittleJonHUtils;
  * @author psykedady
  *
  */
-class JTestException {
+public class JTestException {
 
 	@Test
-	void AnalyzeExceptionWORD() {
+	public void AnalyzeExceptionWORD() {
 		
 		String cronExpression="CIAO";
 		boolean minute[]=new boolean [60];
@@ -27,7 +27,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionMONTHWORD() {
+	public void AnalyzeExceptionMONTHWORD() {
 		
 		String cronExpression="MON";
 		boolean month[]=new boolean [12];
@@ -38,7 +38,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionWEEKWORD() {
+	public void AnalyzeExceptionWEEKWORD() {
 		
 		String cronExpression="JAN";
 		boolean week[]=new boolean [7];
@@ -49,7 +49,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionRANGE() {
+	public void AnalyzeExceptionRANGE() {
 		
 		String cronExpression="32-13";
 		boolean minute[]=new boolean [60];
@@ -60,7 +60,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionNEGATIVE() {
+	public void AnalyzeExceptionNEGATIVE() {
 		
 		String cronExpression="-13";
 		boolean minute[]=new boolean [60];
@@ -71,7 +71,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionMINUS() {
+	public void AnalyzeExceptionMINUS() {
 		
 		String cronExpression="12-";
 		boolean minute[]=new boolean [60];
@@ -82,7 +82,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionGLOBNUMBER() {
+	public void AnalyzeExceptionGLOBNUMBER() {
 		
 		String cronExpression="*12";
 		boolean minute[]=new boolean [60];
@@ -93,7 +93,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionNUMBERGLOB() {
+	public void AnalyzeExceptionNUMBERGLOB() {
 		
 		String cronExpression="12*";
 		boolean minute[]=new boolean [60];
@@ -104,7 +104,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionONLYSTEP() {
+	public void AnalyzeExceptionONLYSTEP() {
 		
 		String cronExpression="/12";
 		boolean minute[]=new boolean [60];
@@ -115,7 +115,7 @@ class JTestException {
 	}
 	
 	@Test
-	void AnalyzeExceptionINDEXOUT() {
+	public void AnalyzeExceptionINDEXOUT() {
 		
 		String cronExpression="612";
 		boolean minute[]=new boolean [60];
@@ -127,7 +127,7 @@ class JTestException {
 	
 	
 	@Test
-	void AnalyzeExceptionWOUTVALUE() {
+	public void AnalyzeExceptionWOUTVALUE() {
 		
 		String cronExpression="-/";
 		boolean minute[]=new boolean [60];
@@ -138,7 +138,7 @@ class JTestException {
 	}
 	
 	@Test
-	void littleJonHExceptionVUOTO() {
+	public void littleJonHExceptionVUOTO() {
 		
 		String cronExpression="";
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -148,7 +148,7 @@ class JTestException {
 	}
 	
 	@Test
-	void littleJonHExceptionSIZE4() {
+	public void littleJonHExceptionSIZE4() {
 		
 		String cronExpression="* * * *";
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -159,7 +159,7 @@ class JTestException {
 	
 	
 	@Test
-	void littleJonHExceptionSIZE6() {
+	public void littleJonHExceptionSIZE6() {
 		
 		String cronExpression="* * * * * *";
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -169,7 +169,7 @@ class JTestException {
 	}
 	
 	@Test
-	void littleJonHExceptionOVERFLOWHOUR() {
+	public void littleJonHExceptionOVERFLOWHOUR() {
 		
 		String cronExpression="* 24 * * *";
 		assertThrows(IndexOutOfBoundsException.class, () -> {
@@ -179,7 +179,7 @@ class JTestException {
 	}
 	
 	@Test
-	void nextException31FEB() {
+	public void nextException31FEB() {
 		
 		String cronExpression="0 0 31 FEB *";
 		LittleJonH l=new LittleJonH(cronExpression);

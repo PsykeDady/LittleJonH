@@ -1,6 +1,12 @@
 # LittleJonH
 *Little Java crON Helper*
 
+## How to run tests
+
+```bash
+./mill __.test
+```
+
 `version=0.1`
 
 > **<u>ATTENTION</u>**:  
@@ -13,7 +19,8 @@
 - ~~integrate dayOfWeek~~ 
 - ~~single next method for time unit ( clean )~~
 - prev
-- ~~analyze with wordlist~~
+- ~~analyze
+-  with wordlist~~
 - documentation
 - find better algorithm to calculate dayOfWeek
 
